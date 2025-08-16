@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caça ao Tesouro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #8B4513;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 300px;
+        }
+        
+        .pista {
+            text-align: center;
+            padding: 20px;
+            background-color: #FFFACD;
+            border: 2px dashed #DAA520;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .pista h2 {
+            color: #8B4513;
+        }
+        
+        .links-pistas {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .links-pistas a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #DAA520;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .links-pistas a:hover {
+            background-color: #8B4513;
+            transform: translateY(-2px);
+        }
+        
+        .voltar {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #8B4513;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+        .voltar:hover {
+            background-color: #A0522D;
+        }
+        
+        .not-found {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .not-found h2 {
+            color: #8B4513;
+            font-size: 1.8rem;
+        }
+        
+        .dica-falsa {
+            background-color: #FFE4E1;
+            border-left: 4px solid #FF6347;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .tesouro {
+            font-size: 3rem;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Caça ao Tesouro Pirata</h1>
+    </header>
+    
+    <div class="container">
+        <div id="content">
+            <!-- O conteúdo será injetado aqui via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Mapeamento das pistas
+        const pistas = {
+            'sol': {
+                mensagem: 'Você encontrou a pista do Sol! 🌞',
+                dica: 'Procure onde brilha forte, mas não queima.'
+            },
+            'lua': {
+                mensagem: 'Você encontrou a pista da Lua! 🌙',
+                dica: 'Noite escura é meu lar, mas não me encontre no mar.'
+            },
+            'estrela': {
+                mensagem: 'Você encontrou a pista da Estrela! ⭐',
+                dica: 'Pisco no céu à noite, mas não sou um satélite.'
+            },
+            'mapa': {
+                mensagem: '🎉 Parabéns! Você encontrou o tesouro! 🏆',
+                dica: 'O verdadeiro tesouro foram as pistas que encontramos pelo caminho!'
+            }
+        };
+
+        // Função para renderizar o conteúdo baseado na URL
+        function renderContent() {
+            const contentDiv = document.getElementById('content');
+            const path = window.location.hash.substring(1) || '/';
+            
+            if (path === '/') {
+                // Página inicial
+                contentDiv.innerHTML = `
+                    <h2>Bem-vindo à Caça ao Tesouro!</h2>
+                    <p>Siga as pistas para encontrar o tesouro escondido.</p>
+                    <p>Tente acessar algumas pistas:</p>
+                    
+                    <div class="links-pistas">
+                        <a href="#/pista/sol">Pista do Sol</a>
+                        <a href="#/pista/lua">Pista da Lua</a>
+                        <a href="#/pista/estrela">Pista da Estrela</a>
+                    </div>
+                    
+                    <p>Ou tente descobrir outras pistas modificando a URL!</p>
+                `;
+            } else if (path.startsWith('/pista/')) {
+                // Páginas de pista
+                const codigo = path.split('/')[2];
+                
+                if (pistas[codigo]) {
+                    // Pista válida
+                    const pista = pistas[codigo];
+                    contentDiv.innerHTML = `
+                        <div class="pista">
+                            <h2>${pista.mensagem}</h2>
+                            <p>${pista.dica}</p>
+                            ${codigo === 'mapa' ? '<div class="tesouro">💰 🏴‍☠️ 💎</div>' : ''}
+                        </div>
+                        
+                        <div class="links-pistas">
+                            <a href="#/pista/sol">Pista do Sol</a>
+                            <a href="#/pista/lua">Pista da Lua</a>
+                            <a href="#/pista/estrela">Pista da Estrela</a>
+                        </div>
+                        
+                        <a href="#" class="voltar">Voltar ao Início</a>
+                    `;
+                } else {
+                    // Pista não encontrada (404)
+                    contentDiv.innerHTML = `
+                        <div class="not-found">
+                            <h2>Pista não encontrada! 🏴‍☠️</h2>
+                            <div class="dica-falsa">
+                                <p>Dica falsa: O tesouro não está aqui, mas talvez você deva procurar pela pista do "mapa"...</p>
+                            </div>
+                            <a href="#" class="voltar">Voltar ao Início</a>
+                        </div>
+                    `;
+                }
+            } else {
+                // Qualquer outra rota (404)
+                contentDiv.innerHTML = `
+                    <div class="not-found">
+                        <h2>Rota desconhecida! 🏴‍☠️</h2>
+                        <div class="dica-falsa">
+                            <p>Dica falsa: Não perca tempo aqui! As pistas válidas são: sol, lua e estrela.</p>
+                        </div>
+                        <a href="#" class="voltar">Voltar ao Início</a>
+                    </div>
+                `;
+            }
+            
+            // Adiciona evento de clique para os links de voltar
+            document.querySelectorAll('.voltar').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.hash = '';
+                });
+            });
+        }
+
+        // Inicializa o conteúdo
+        renderContent();
+        
+        // Atualiza o conteúdo quando a hash muda
+        window.addEventListener('hashchange', renderContent);
+    </script>
+</body>
+</html>
